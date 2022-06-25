@@ -6,7 +6,7 @@ import numpy as np
 running = True
 
 host = '172.16.0.52' #'103.231.240.131'
-port = 25280 #8080
+port = 8080 #8080
 threadCounter = 0
 
 disconnect = False  #Might not use
