@@ -10,8 +10,8 @@ from tkinter import E
 #list = []
 running = True
 
-host = '172.16.0.52'
-port = 25280
+host = '192.168.0.107'#'172.16.0.52'
+port = 8080#25280
 threadCounter = 0
 
 disconnect = False  #Might not use
@@ -22,23 +22,23 @@ def client_handler(conn):
     conn.send(str.encode("Connected to the server."))
     while True:
         try:
-            data= conn.recv(1024)
-            msg = data.decode(1024)
-            if msg == 'Y' or msg == 'y':
-                break
-            #place here append to data list
-                
-            list.append(msg)
-                
-            # reply = f'Server: {msg}'
-            # conn.sendall(str.encode(reply))
-        except:
-            #create csv file to send to database
-            print("Save Data")
-            # filename = "Vibration_Data.csv"
-            # print("Saving data on " + filename + "\n")
-            # np.savetxt(filename, list, delimiter=", ", fmt='% s')
-        conn.close()
+            data = conn.recv(1024)
+            if data:
+                print(data)
+                msg = data.decode()
+                if(msg == 'Y' or msg == 'y'):
+                    break
+                else:
+                    list.append(msg)
+        except Exception as e:
+            print(e)
+    #create csv file to send to database
+    print("Client is disconnecting...")
+    print("Saving Data...")
+    filename = "Vibration_Data.csv"
+    np.savetxt(filename, list, delimiter=", ", fmt='% s')
+    print("Data saved on " + filename + "\n")
+    conn.close()
 
 #CLIENT CONNECTION ACCEPT
 def connection_accept(s):
@@ -54,7 +54,7 @@ def start_server(host, port):
     except socket.error as e:
         print(str(e))
     print(f'Server is listening on the port {port}...')
-    s.listen()
+    s.listen(5)
 
     while True:
         connection_accept(s)

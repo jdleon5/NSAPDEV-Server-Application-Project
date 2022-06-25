@@ -13,8 +13,8 @@ sensors_event_t event;
 const  char * ssid = "TP-Link_759C" ; 
 const  char * password = "PLDTWIFIzgxct_0" ;
 
-const IPAddress serverIP (172,16,0,52) ;  //the address to be accessed 
-uint16_t serverPort =  25280;          //server port number
+const IPAddress serverIP (192,168,0,107) ;//172,16,0,52  //the address to be accessed 
+uint16_t serverPort =  8080;//25280          //server port number
 char stopped;
 int counter = 0;
 
@@ -67,6 +67,7 @@ void  loop ( )
               stopped = Serial.read();
               if (stopped == 'Y' || stopped == 'y')
               {
+                client.print(stopped);
                 Serial.println("\nCLIENT: Stopping...");
                 Serial.println("\nCLIENT: Disconnecting...");
                 client.stop(); //Close the client
@@ -84,11 +85,23 @@ void  loop ( )
         } 
         Serial.println ( "\nCLIENT: Close the current connection" ) ; 
         client.stop ( ) ;  //Close the client 
+        while(1)
+            {
+              //Trap
+              delay(5000);
+              char ans;
+              ans = Serial.read();
+              if(ans == 'x')
+                break;             
+            }
+        
+        //delay(60000);
     } 
     else 
     { 
         Serial.println ( "\nCLIENT: Access failed" ) ;
         client.stop ( ) ;  //Close the client 
+        //delay(60000);
     } 
     delay ( 5000 ) ; 
 }
