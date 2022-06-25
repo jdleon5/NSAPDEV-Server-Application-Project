@@ -5,8 +5,8 @@ import numpy as np
 #list = []
 running = True
 
-host = '192.168.0.107'#'172.16.0.52'
-port = 8080#25280
+host = '172.16.0.52' #'103.231.240.131'
+port = 25280 #8080
 threadCounter = 0
 
 disconnect = False  #Might not use
@@ -14,6 +14,9 @@ disconnect = False  #Might not use
 #CLIENT HANDLING
 def client_handler(conn):
     list = []
+
+    #Check pre shared key if same (PLACE IT HERE)
+
     conn.send(str.encode("Connected to the server."))
     while True:
         try:

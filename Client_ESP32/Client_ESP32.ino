@@ -12,9 +12,10 @@ sensors_event_t event;
 
 const  char * ssid = "TP-Link_759C" ; 
 const  char * password = "PLDTWIFIzgxct_0" ;
+const char * pshash = "32CAFE015"
 
-const IPAddress serverIP (192,168,0,107) ;//172,16,0,52  //the address to be accessed 
-uint16_t serverPort =  8080;//25280          //server port number
+const IPAddress serverIP (103,231,240,131) ;//172,16,0,52  //the address to be accessed 
+uint16_t serverPort =  25280;//25280          //server port number
 char stopped;
 int counter = 0;
 
