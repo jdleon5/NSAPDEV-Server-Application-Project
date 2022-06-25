@@ -1,11 +1,6 @@
 import socket               # Import socket module
 from _thread import *
-import serial
-import threading
-import json
 import numpy as np
-from logging import exception
-from tkinter import E
 
 #list = []
 running = True
