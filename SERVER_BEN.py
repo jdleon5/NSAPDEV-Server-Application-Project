@@ -6,23 +6,24 @@ import datetime
 #list = []
 running = True
 
-host = '192.168.18.116' #'172.16.0.52' #'103.231.240.131' #192.168.18.116
+host = '172.16.0.52' #'103.231.240.131' #192.168.18.116
 port = 8080 #8080
 threadCounter = 0
 PSHK = "32CAFE015"
 Authenticated = False  #Used
 
 #CLIENT HANDLING
-def client_handler(conn):
+def client_handler(conn, addr):
     list = []
-    conn.send(str.encode("Connected to the server.\nChecking for Authentication before proceeding to Data transfer."))
+    #conn.send(str.encode("Connected to the server.\nChecking for Authentication before proceeding to Data transfer."))
     #Check pre shared key if same (PLACE IT HERE)
     data = conn.recv(1024)
     PSHKEncoded = PSHK.encode() #Need to encode PSHK to compare with Hash Key of Client Device 
     data.decode()
+    print(addr)
     if PSHKEncoded == data:
         print("Authentication Successful")
-        conn.send(str.encode("Authentication Successful"))
+        #conn.send(str.encode("Authentication Successful"))
         while True:
             try:
                 data = conn.recv(1024)
@@ -45,8 +46,8 @@ def client_handler(conn):
     if Authenticated == True:
         print("Client is disconnecting...")
         print("Saving Data...")
-        filename = str(datetime.datetime.now()).replace(":", "-").split(".")
-        filename = "Vibration_Data_" + filename[0] + ".csv"
+        dateNtime = str(datetime.datetime.now()).replace(":", "-").split(".")
+        filename = "ADXLData" + " " +  addr + " " + dateNtime[0] + ".csv"
         np.savetxt(filename, list, delimiter=", ", fmt='% s')
         print("Data saved on " + filename + "\n")
         conn.close()
@@ -55,7 +56,7 @@ def client_handler(conn):
 def connection_accept(s):
     c, address = s.accept()
     print(f'Connected to: {address[0]}:{str(address[1])}')
-    start_new_thread(client_handler, (c, ))
+    start_new_thread(client_handler, (c, address[0], ))
 
 #SERVER START
 def start_server(host, port):

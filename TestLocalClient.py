@@ -14,8 +14,8 @@ ctr = 1
 delay = 1 #second/s
 
 #Connect to the server
-s.connect(('192.168.18.116', 8080))
-
+s.connect(('172.16.0.52', 8080))
+    
 #Send/Receive data
 print (s.recv(1024).decode())
 s.send(PSHK.encode())
