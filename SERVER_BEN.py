@@ -20,7 +20,6 @@ def client_handler(conn, addr):
     data = conn.recv(1024)
     PSHKEncoded = PSHK.encode() #Need to encode PSHK to compare with Hash Key of Client Device 
     data.decode()
-    print(addr)
     if PSHKEncoded == data:
         print("Authentication Successful")
         #conn.send(str.encode("Authentication Successful"))
