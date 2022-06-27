@@ -1,17 +1,21 @@
 #include <WiFi.h>
 #include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_ADXL345_U.h>
 #include <ArduinoJson.h>
 
+Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(12346);
 hw_timer_t * timer = NULL;
 
 DynamicJsonDocument root(1024);
+sensors_event_t event;
 
-const  char * ssid = "HUAWEI-EhP9" ; 
-const  char * password = "A74jR5Gp" ;
+const  char * ssid = "TP-Link_759C" ; 
+const  char * password = "PLDTWIFIzgxct_0" ;
 const char * pshash = "32CAFE015" ;
 
-const IPAddress serverIP (172,16,0,52) ;//172,16,0,52  //the address to be accessed 
-uint16_t serverPort =  8080;//25280          //server port number
+const IPAddress serverIP (103,231,240,131) ;//172,16,0,52  //the address to be accessed 
+uint16_t serverPort =  25280;//25280          //server port number
 char stopped;
 int counter = 0;
 
@@ -38,6 +42,12 @@ void  setup ( )
     Serial.print ( "CLIENT: the IP the Address:" ) ; 
     Serial.println (WiFi.localIP()) ; 
 
+    if (!accel.begin()) 
+    {
+      Serial.println("Accelerometer not detected!");
+      while(1);
+    }
+    accel.setRange(ADXL345_RANGE_16_G);
     timer = timerBegin(0, 80, true);
     timerAttachInterrupt(timer, &onTimer, true);
     timerAlarmWrite(timer, 1000000, true);
@@ -50,6 +60,8 @@ void  loop ( )
     if  ( client.connect ( serverIP , serverPort ) )  //Try to access the target address 
     { 
         Serial.println ( "\nCLIENT: Access successful" ) ;
+        Serial.println ( "\nCLIENT: Authenticating..." );
+        client.print(pshash);
         Serial.println ( "\nCLIENT: Enter 'Y' to stop client connection." );
         while  ( client.connected ( )  || client.available ( ) )  //If connected or received unread data 
         {            
@@ -63,11 +75,14 @@ void  loop ( )
                 Serial.println("\nCLIENT: Disconnecting...");
                 client.stop(); //Close the client
               }
+            }   
+            //Get Data
+            accel.getEvent(&event);
             //Send data to the server 
             client.print("{\"time\":" + String(counter) + ", " +
-                         "\"x\":" + "1" + ", " + 
-                         "\"y\":" + "1" + ", " + 
-                         "\"z\":" + "1" + "}");
+                         "\"x\":" + event.acceleration.x + ", " + 
+                         "\"y\":" + event.acceleration.y + ", " + 
+                         "\"z\":" + event.acceleration.z + "}");
             delay(1000);
             //vTaskDelay(portMAX_DELAY);
         } 
@@ -84,7 +99,6 @@ void  loop ( )
             }
         
         //delay(60000);
-    } 
     }
     else 
     { 
