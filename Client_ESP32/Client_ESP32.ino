@@ -12,7 +12,7 @@ sensors_event_t event;
 
 const  char * ssid = "TP-Link_759C" ; 
 const  char * password = "PLDTWIFIzgxct_0" ;
-const char * pshash = "32CAFE015"
+const char * pshash = "32CAFE015" ;
 
 const IPAddress serverIP (103,231,240,131) ;//172,16,0,52  //the address to be accessed 
 uint16_t serverPort =  25280;//25280          //server port number
@@ -42,9 +42,9 @@ void  setup ( )
     Serial.print ( "CLIENT: the IP the Address:" ) ; 
     Serial.println (WiFi.localIP()) ; 
 
-    //Check sensor
-    if (!accel.begin()) {
-      Serial.println("Accelerator not detected.");
+    if (!accel.begin()) 
+    {
+      Serial.println("Accelerometer not detected!");
       while(1);
     }
     accel.setRange(ADXL345_RANGE_16_G);
@@ -60,6 +60,8 @@ void  loop ( )
     if  ( client.connect ( serverIP , serverPort ) )  //Try to access the target address 
     { 
         Serial.println ( "\nCLIENT: Access successful" ) ;
+        Serial.println ( "\nCLIENT: Authenticating..." );
+        client.print(pshash);
         Serial.println ( "\nCLIENT: Enter 'Y' to stop client connection." );
         while  ( client.connected ( )  || client.available ( ) )  //If connected or received unread data 
         {            
@@ -73,8 +75,8 @@ void  loop ( )
                 Serial.println("\nCLIENT: Disconnecting...");
                 client.stop(); //Close the client
               }
-            }
-            //Input data timer print here 
+            }   
+            //Get Data
             accel.getEvent(&event);
             //Send data to the server 
             client.print("{\"time\":" + String(counter) + ", " +
@@ -97,7 +99,7 @@ void  loop ( )
             }
         
         //delay(60000);
-    } 
+    }
     else 
     { 
         Serial.println ( "\nCLIENT: Access failed" ) ;
