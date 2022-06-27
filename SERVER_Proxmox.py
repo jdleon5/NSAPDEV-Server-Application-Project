@@ -3,26 +3,22 @@ from _thread import *
 import numpy as np
 import datetime
 
-#list = []
 running = True
 
-host = '172.16.0.52' #'103.231.240.131' #192.168.18.116
-port = 8080 #8080
+host = '172.16.0.52'
+port = 8080 
 threadCounter = 0
 PSHK = "32CAFE015"
-Authenticated = False  #Used
+Authenticated = False 
 
 #CLIENT HANDLING
 def client_handler(conn, addr):
     list = []
-    #conn.send(str.encode("Connected to the server.\nChecking for Authentication before proceeding to Data transfer."))
-    #Check pre shared key if same (PLACE IT HERE)
     data = conn.recv(1024)
     PSHKEncoded = PSHK.encode() #Need to encode PSHK to compare with Hash Key of Client Device 
     data.decode()
     if PSHKEncoded == data:
         print("Authentication Successful")
-        #conn.send(str.encode("Authentication Successful"))
         while True:
             try:
                 data = conn.recv(1024)
@@ -41,12 +37,12 @@ def client_handler(conn, addr):
         print("Authentication Failed")
         Authenticated = False
         conn.close()
-    #create csv file to send to database
+    #create csv file to send to save
     if Authenticated == True:
         print("Client is disconnecting...")
         print("Saving Data...")
         dateNtime = str(datetime.datetime.now()).replace(":", "-").split(".")
-        filename = "ADXLData" + " " +  addr + " " + dateNtime[0] + ".csv"
+        filename = "./CSV_DATA/" + "ADXLData" + " " +  addr + " " + dateNtime[0] + ".csv"
         np.savetxt(filename, list, delimiter=", ", fmt='% s')
         print("Data saved on " + filename + "\n")
         conn.close()
@@ -72,27 +68,3 @@ def start_server(host, port):
         
         
 start_server(host, port)
-
-
-#PREVIOUS CODE
-s.listen(5)                 # Now wait for client connection.
-c, addr = s.accept()        # Establish connection with client.
-print ('\nSERVER: Got connection from', addr, "\n")
-h='Thank you for connecting'
-c.send(h.encode())
-
-while 1:
-    try:
-        data = c.recv(1024)
-        if data:
-            print(data)
-            datastring = data.decode()
-            list.append(datastring)
-    except:
-        print("\nClient has Disconnected.\n")
-        Authenticated = True
-        #Place CSV creation here...
-        filename = "Vibration_Data.csv"
-        print("Saving data on " + filename + "\n")
-        np.savetxt(filename, list, delimiter=", ", fmt='% s')
-        c.close()
