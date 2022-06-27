@@ -8,8 +8,10 @@ Client_Simulated for Online simulation of Device (ESP32) (NOTE: Tested and Used 
 
  To run:
 	
-	1. Execute server using
+    1. Execute server using
         python3 SERVER_Proxmox.py
     2. Run physical ESP32 using Arduino IDE
     3. Run simulated ESP32 in Wokwi.com (Note: Browser window must be on focus to continuously send data to server).
     4. Enjoy.
+    
+Data will be saved on CSV_DATA folder.
